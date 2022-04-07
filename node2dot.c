@@ -7,6 +7,8 @@
  *
  * initial version 2016-9-19 12:00
  * last update 2016-9-19 add parmeter --skip-empty --color
+ *  
+ * The second change was made by Song Jinzhou, adding color control for the lines  2022-04-07 10:54:03
  */
 
 #include<unistd.h>
@@ -14,6 +16,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<getopt.h>
+#include<time.h>
 
 #define LENGTH 1024
 #define bool char
@@ -95,6 +98,7 @@ void usage()
 			, progname);
 }
 
+char *linecolor[] = {"red","black","blue","skyblue","violet"};
 
 
 int main(int argc, char *argv[])
@@ -478,11 +482,14 @@ int print_body(void)
 }
 int add_link(int parent_node_num, int parent_elem_num, int child_node_num)
 {
+	int a;
+	srand(time(0) + rand());
+	a = rand() % (sizeof(linecolor)/sizeof(linecolor[0]));
 	sprintf(nodes[parent_node_num].links[nodes[parent_node_num].links_count++], 
-             "node%d:f%d -> node%d:f%d\n",
+             "node%d:f%d -> node%d:f%d[color=\"%s\", style=\"bold\"]\n",
 			 parent_node_num,
 			 parent_elem_num,
 			 child_node_num,
-             (int)0);
+             (int)0, linecolor[a]);
 
 }
