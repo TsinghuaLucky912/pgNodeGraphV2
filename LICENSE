@@ -1,0 +1,8 @@
+## 说明
+
+原仓库的 git 地址：https://github.com/shenyuflying/pgNodeGraph 但是该仓库目前似乎不再维护
+
+
+
+## 状态
+1. 目前已增加了add_link函数中的颜色支持
