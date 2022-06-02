@@ -1,3 +1,18 @@
+=============================================
+# ATTENTION
+
+The original author's git repository is：https://github.com/shenyuflying/pgNodeGraph
+
+# Difference Description
+1. I have added color support for lines on this basis, and I will improve other data structure types of PostgreSQL on this warehouse later.
+
+# Instructions for use
+1. https://rng-songbaobao.blog.csdn.net/article/details/124015064
+2. this document
+
+
+=============================================
+
 pgNodeGraph -- a postgreSQL node tree print tool
 =============================================
 
