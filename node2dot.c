@@ -85,7 +85,6 @@ bool is_skip_empty = false;
 bool is_color = false;
 char * skip_node_name = NULL;
 
-
 void usage()
 {
 	printf("\n\nConvert node tree of postgres to dot format\n"
@@ -199,7 +198,6 @@ int main(int argc, char *argv[])
 #endif
 	}
 
-
 	/*
      * in previous we alloc stack on stack which raise an link error 
      * relocation truncated to fit: R_X86_64_PC32 against 
@@ -210,9 +208,8 @@ int main(int argc, char *argv[])
 
 	print_header();
 	while (EOF != (c = getc(stdin)))
-	{
-		
- 		char * name = NULL;
+	{	
+ 		char *name = NULL;
 		switch(c)
 		{
 			case '{': /* a new node*/
@@ -298,7 +295,7 @@ int add_node(int num, char *name)
 
 	if (!is_color)
 	{
-			nodes[num].color = "black";
+		nodes[num].color = "black";
 	}
 	else
 	{
@@ -357,18 +354,18 @@ int add_item(int node_n, int elem_n, char *name)
 char * get_one_name()
 {
 	char * buffer = (char*)malloc(LENGTH);
-	int i=0;
-	int c=0;
-	int len=0;
-	bool found_zero=false, found_non_zero=false;
-	char * pos;
+	int i = 0;
+	int c = 0;
+	int len = 0;
+	bool found_zero = false, found_non_zero = false;
+	char *pos;
 
 	memset(buffer,0,LENGTH);
 	while((c=getc(stdin)) != ':' && c!='{' && c!='}')
-		buffer[i++]=c;	
+		buffer[i++] = c;	
 
 	/* push back the token */
-	ungetc(c,stdin);
+	ungetc(c, stdin);
 
 	len = strlen(buffer);
 
@@ -427,7 +424,6 @@ int print_body(void)
 	/* print the nodes */
 	for (i = 0; i <= get(node_cnt); i++)
 	{
-
 		if (strcmp(nodes[i].name,"") == 0)
 			continue;
 	
