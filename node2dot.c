@@ -58,6 +58,7 @@ int push(int var)
 {
 	stack[top++] = var;
 }
+
 int pop()
 {
 	return stack[--top];
@@ -80,11 +81,11 @@ char *progname = "node2dot";
 /*
  * options
  */
-
-
 bool is_skip_empty = false;
 bool is_color = false;
 char * skip_node_name = NULL;
+
+
 void usage()
 {
 	printf("\n\nConvert node tree of postgres to dot format\n"
@@ -99,7 +100,6 @@ void usage()
 }
 
 char *linecolor[] = {"red","black","blue","skyblue","violet"};
-
 
 int main(int argc, char *argv[])
 {
@@ -128,7 +128,6 @@ int main(int argc, char *argv[])
 	 * */
 	int level = 0;
 	
-
     while (1)
 	{
         int this_option_optind = optind ? optind : 1;
@@ -143,17 +142,14 @@ int main(int argc, char *argv[])
             {0,           0,                 0,  0 }
         };
 
-        c = getopt_long(argc, argv, "h",
-                 long_options, &option_index);
+        c = getopt_long(argc, argv, "h", long_options, &option_index);
         
 		if (c == -1)
             break;
 
-
         switch (c)
 		{
            case 0:
-
                 if (strcmp("help",long_options[option_index].name) == 0)
 				{
 					usage();
@@ -210,7 +206,7 @@ int main(int argc, char *argv[])
      * symbol `stack' defined in COMMON section 
      * to fix this alloc it in heap using malloc
      */
-	stack = (int*)malloc(sizeof(int)*LENGTH);
+	stack = (int*) malloc(sizeof(int) * LENGTH);
 
 	print_header();
 	while (EOF != (c = getc(stdin)))
@@ -282,19 +278,15 @@ int main(int argc, char *argv[])
 
 	print_body();
 	print_footer();
-
 }
 
 int print_header(void)
 {
-
 	printf("digraph Query {\n");
 	printf("size=\"100000,100000\";\n");
 	printf("rankdir=LR;\n");
 	printf("node [shape=record];\n");
 }
-
-
 
 int add_node(int num, char *name)
 {
@@ -343,7 +335,6 @@ int add_node(int num, char *name)
 	
 }
 
-
 int print_footer(void)
 {
 	printf("\n}");
@@ -357,7 +348,6 @@ int add_item(int node_n, int elem_n, char *name)
 	memcpy(nodes[node_n].elems[elem_n].name, name, LENGTH);
 	free(name);
 }
-
 
 /*
  * get one node or element name from stdin
@@ -379,7 +369,6 @@ char * get_one_name()
 
 	/* push back the token */
 	ungetc(c,stdin);
-
 
 	len = strlen(buffer);
 
@@ -430,10 +419,10 @@ char * get_one_name()
 
 	return buffer;
 }
+
 int print_body(void)
 {
 	int i, j;
-
 
 	/* print the nodes */
 	for (i = 0; i <= get(node_cnt); i++)
@@ -445,13 +434,10 @@ int print_body(void)
 		if (skip_node_name && strstr(nodes[i].name, skip_node_name))
 			continue;
 
-		printf("node%d [shape=record, color=%s, label=\"<f0> %s | ",
-				i, nodes[i].color, nodes[i].name);
-
+		printf("node%d [shape=record, color=%s, label=\"<f0> %s | ", i, nodes[i].color, nodes[i].name);
 
 		for (j = 1; j < LENGTH; j++)
 		{
-
 			if (strlen(nodes[i].elems[j].name) != 0)
 			   printf("<f%d> %s ", j, nodes[i].elems[j].name);
 			else
@@ -461,13 +447,11 @@ int print_body(void)
 				printf("| ");
 		}
 		printf("\"];\n");
-
 	}	
 
 	/* print the links */
 	for (i = 0; i < get(node_cnt); i++)
 	{
-
 		if (strcmp(nodes[i].name,"") == 0)
 			continue;
 	
@@ -477,9 +461,8 @@ int print_body(void)
 		for (j = 0; j < nodes[i].links_count; j++)
 			printf("%s", nodes[i].links[j]);
 	}
-
-
 }
+
 int add_link(int parent_node_num, int parent_elem_num, int child_node_num)
 {
 	int a;
@@ -491,5 +474,4 @@ int add_link(int parent_node_num, int parent_elem_num, int child_node_num)
 			 parent_elem_num,
 			 child_node_num,
              (int)0, linecolor[a]);
-
 }
