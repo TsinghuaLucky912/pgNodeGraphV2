@@ -1,6 +1,6 @@
 #!/bin/bash
 
-gcc -g node2dot.c -o node2dot
+gcc -O0 -mcmodel=medium -g node2dot.c -o node2dot
 
 dir_node="./node/"
 dir_dot="./dot/"
@@ -23,4 +23,4 @@ do
 	fi
 done
 
-rm node2dot
+rm -rf node2dot
