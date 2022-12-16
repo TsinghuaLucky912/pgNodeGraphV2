@@ -100,10 +100,8 @@ void usage()
 
 char *linecolor[] = {"red","black","blue","skyblue","violet"};
 
-
 int main(int argc, char *argv[])
 {
-
 	char buffer[LENGTH];
 	
 	int  parent_node_num;
@@ -127,7 +125,6 @@ int main(int argc, char *argv[])
 	 *      thing have to be removed by hand.
 	 * */
 	int level = 0;
-	
 
     while (1)
 	{
@@ -151,7 +148,6 @@ int main(int argc, char *argv[])
         switch (c)
 		{
            case 0:
-
                 if (strcmp("help", long_options[option_index].name) == 0)
 				{
 					usage();
@@ -234,7 +230,6 @@ int main(int argc, char *argv[])
 				break;
 
 			case '}': /* end of the node */
-
 				/* we are not in a struct */
 				if (level <= 0)
 					continue;
@@ -247,7 +242,6 @@ int main(int argc, char *argv[])
 				break;
 
 			case ':':  /* a new item */
-
 				/* we are not in a struct */
 				if (level <= 0)
 					continue;
@@ -317,6 +311,7 @@ int add_node(int num, char *name)
 			nodes[num].color = "black";
 		}
 	}
+
 	free(name);
 	for (i = 0; i < LENGTH; i++)
 	{
@@ -444,7 +439,9 @@ int print_body(void)
 			}
 
 			if (strcmp(nodes[i].elems[j+1].name,"") != 0)
+			{
 				printf("| ");
+			}
 		}
 		printf("\"];\n");
 	}	
@@ -452,7 +449,7 @@ int print_body(void)
 	/* print the links */
 	for (i = 0; i < get(node_cnt); i++)
 	{
-		if (strcmp(nodes[i].name,"") == 0)
+		if (strcmp(nodes[i].name, "") == 0)
 			continue;
 	
 		if (skip_node_name && strstr(nodes[i].name, skip_node_name))
@@ -474,5 +471,4 @@ int add_link(int parent_node_num, int parent_elem_num, int child_node_num)
 			 parent_elem_num,
 			 child_node_num,
              (int)0, linecolor[a]);
-
 }
