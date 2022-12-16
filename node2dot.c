@@ -205,8 +205,7 @@ int main(int argc, char *argv[])
 	print_header();
 	while (EOF != (c = getc(stdin)))
 	{
-		
- 		char * name = NULL;
+ 		char *name = NULL;
 		switch(c)
 		{
 			case '{': /* a new node*/
@@ -345,7 +344,7 @@ int add_item(int node_n, int elem_n, char *name)
  * if name is ok return the name
  * otherwise return NULL
  */
-char * get_one_name()
+char *get_one_name()
 {
 	char * buffer = (char*)malloc(LENGTH);
 	int i = 0;
