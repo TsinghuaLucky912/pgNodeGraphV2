@@ -9,6 +9,11 @@
  * last update 2016-9-19 add parmeter --skip-empty --color
  *  
  * The second change was made by Song Jinzhou, adding color control for the lines  2022-04-07 10:54:03
+ * 
+ * Third update: 2022-12-16 13:50:50
+ * 		1. Bold the title
+ * 		2. Relevant figures are displayed
+ * 		3. Change the font
  */
 
 #include<unistd.h>
@@ -62,6 +67,17 @@ int push(int var)
 int pop()
 {
 	return stack[--top];
+}
+
+void remove_line_breaks(char *p)
+{
+	int i = 0;
+
+	while(*(p+i) != '\n')
+	{
+		i++;
+	}
+	*(p+i)='\0';
 }
 
 /*
@@ -272,7 +288,7 @@ int print_header(void)
 	printf("digraph Query {\n");
 	printf("size=\"100000,100000\";\n");
 	printf("rankdir=LR;\n");
-	printf("node [shape=record];\n");
+	printf("node [shape=none];\n");
 }
 
 int add_node(int num, char *name)
@@ -324,7 +340,6 @@ int add_node(int num, char *name)
 	}
 }
 
-
 int print_footer(void)
 {
 	printf("\n}");
@@ -350,11 +365,11 @@ char *get_one_name()
 	int i = 0;
 	int c = 0;
 	int len = 0;
-	bool found_zero = false, found_non_zero = false;
+	// bool found_zero = false, found_non_zero = false;
 	char *pos;
 
-	memset(buffer,0,LENGTH);
-	while((c=getc(stdin)) != ':' && c!='{' && c!='}')
+	memset(buffer, 0, LENGTH);
+	while((c = getc(stdin)) != ':' && c != '{' && c != '}')
 	{
 		buffer[i++] = c;
 	}
@@ -365,7 +380,6 @@ char *get_one_name()
 	len = strlen(buffer);
 
 	/* remove any illeagal char of dot format */
-
 	for (i = 0; i < len; i++)
 	{
 		if (buffer[i]=='"')
@@ -375,11 +389,11 @@ char *get_one_name()
             buffer[i]=='>') 
 			buffer[i]='-';
 
-		if (buffer[i] == '0')
+		/* if (buffer[i] == '0')
 			found_zero = true;
 
 		if (buffer[i] > '1' && buffer[i] < '9')
-			found_non_zero = true;	
+			found_non_zero = true; */
 	}
 
 	if ((pos = strstr(buffer,"(")) && !strstr(buffer,")"))
@@ -387,14 +401,14 @@ char *get_one_name()
 		pos[0] = ' ';
 	}
 
-	if (is_skip_empty)
+	/* if (is_skip_empty)
 	{
 		if (found_zero && !found_non_zero)
 		{
 			free(buffer);
 			return NULL;
 		}
-	}
+	} */
 
 	if (is_skip_empty && strstr(buffer,"false"))
 	{
@@ -418,31 +432,40 @@ int print_body(void)
 	/* print the nodes */
 	for (i = 0; i <= get(node_cnt); i++)
 	{
+		char stri[128] = { 0 };
+		char strj[128] = { 0 };
 		if (strcmp(nodes[i].name,"") == 0)
 			continue;
 	
 		if (skip_node_name && strstr(nodes[i].name, skip_node_name))
 			continue;
 
-		printf("node%d [shape=record, color=%s, label=\"<f0> %s | ", i, nodes[i].color, nodes[i].name);
+		remove_line_breaks(nodes[i].name);
+		strcpy(stri, nodes[i].name);
+		printf("node%d [label=<<table border=\"0\" cellspacing=\"0\" color=\"%s\">\n"
+			   "	<tr>\n"
+			   "		<td port=\"f0\" border=\"1\" align=\"center\" valign=\"middle\">\n"
+			   "			<b><font face=\"verdana\">%s</font></b>\n"
+			   "		</td>\n"
+			   "	</tr>\n",
+			   i, nodes[i].color, stri);
 
 		for (j = 1; j < LENGTH; j++)
 		{
 			if (strlen(nodes[i].elems[j].name) != 0)
 			{
-				printf("<f%d> %s ", j, nodes[i].elems[j].name);
+				remove_line_breaks(nodes[i].elems[j].name);
+				strcpy(strj, nodes[i].elems[j].name);
+				printf("	<tr><td port=\"f%d\" border=\"1\" align=\"center\" valign=\"middle\"><font face=\"arial\">%s</font></td></tr>\n", 
+					   j, strj);
 			}
 			else
 			{
 				break;
 			}
-
-			if (strcmp(nodes[i].elems[j+1].name,"") != 0)
-			{
-				printf("| ");
-			}
 		}
-		printf("\"];\n");
+
+		printf("	</table>>\n];\n");
 	}	
 
 	/* print the links */
