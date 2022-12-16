@@ -34,7 +34,7 @@ typedef struct Node
 	Elem elems[LENGTH];
 	char links[LENGTH][LENGTH];
 	int links_count;
-	char * color;
+	char *color;
 } Node;
 
 /*
@@ -74,7 +74,7 @@ int add_link(int parent_node_num, int parent_elem_num, int child_node_num);
 int print_header(void);
 int print_footer(void);
 int print_body(void);
-char * get_one_name();
+char *get_one_name();
 
 char *progname = "node2dot";
 
@@ -83,7 +83,7 @@ char *progname = "node2dot";
  */
 bool is_skip_empty = false;
 bool is_color = false;
-char * skip_node_name = NULL;
+char *skip_node_name = NULL;
 
 void usage()
 {
@@ -152,25 +152,25 @@ int main(int argc, char *argv[])
 		{
            case 0:
 
-                if (strcmp("help",long_options[option_index].name) == 0)
+                if (strcmp("help", long_options[option_index].name) == 0)
 				{
 					usage();
 					exit(0);
 				}
 
-                if (strcmp("skip-empty",long_options[option_index].name) == 0)
+                if (strcmp("skip-empty", long_options[option_index].name) == 0)
 				{
 					is_skip_empty = 1;
 					fprintf(stderr,"%s:skip empty elements\n",progname);
 				}
 
-                if (strcmp("color",long_options[option_index].name) == 0)
+                if (strcmp("color", long_options[option_index].name) == 0)
 				{
 					is_color = true;
 					fprintf(stderr,"%s:color output\n",progname);
 				}
 
-                if (strcmp("skip-node",long_options[option_index].name) == 0)
+                if (strcmp("skip-node", long_options[option_index].name) == 0)
 				{
 					skip_node_name = strdup(optarg);
 					fprintf(stderr,"%s:skip mode named:%s\n",progname,skip_node_name);
@@ -178,14 +178,10 @@ int main(int argc, char *argv[])
                 break;
 
            case 'h':
+		   case '?':
 				usage();
 				exit(0);
            		break;
-
-           case '?':
-				usage();
-				exit(0);
-                break;
 
            default:
                 printf("?? getopt returned character code 0%o ??\n", c);
@@ -227,8 +223,8 @@ int main(int argc, char *argv[])
 
 				set(elem_num,0); /* the new node elem_num start at 0 */
 				
-				add_node(new(node_cnt),get_one_name()); /* node_cnt always ++*/
-				set(node_num,get(node_cnt)); /* set the node_num */
+				add_node(new(node_cnt), get_one_name()); /* node_cnt always ++*/
+				set(node_num, get(node_cnt)); /* set the node_num */
 				child_node_num = get(node_num);
 
 				if (get(node_cnt) != 0)
@@ -241,11 +237,11 @@ int main(int argc, char *argv[])
 
 				/* we are not in a struct */
 				if (level <= 0)
-						continue;
+					continue;
 
 				/* restore the parent */
-				set(elem_num,pop()); /* pop elem_num first */
-				set(node_num,pop()); /* pop node_num second */
+				set(elem_num, pop()); /* pop elem_num first */
+				set(node_num, pop()); /* pop node_num second */
 				/* we are out if the stack */
 				level--;
 				break;
@@ -254,14 +250,12 @@ int main(int argc, char *argv[])
 
 				/* we are not in a struct */
 				if (level <= 0)
-						continue;
+					continue;
 
 				name = get_one_name();
 
 				if (name != NULL)
-					add_item(get(node_num),
-							 new(elem_num),
-							 name);
+					add_item(get(node_num), new(elem_num), name);
 				break;
 
 			defalut:
@@ -273,8 +267,7 @@ int main(int argc, char *argv[])
 					ungetc('{',stdin);
 				}
 				break;
-		}	
-
+		}
 	}
 
 	print_body();
@@ -299,23 +292,23 @@ int add_node(int num, char *name)
 
 	if (!is_color)
 	{
-			nodes[num].color = "black";
+		nodes[num].color = "black";
 	}
 	else
 	{
-		if (strstr(name,"QUERY"))
+		if (strstr(name, "QUERY"))
 		{
 			nodes[num].color = "red";
 		}
-		else if (strstr(name,"RTE"))
+		else if (strstr(name, "RTE"))
 		{
 			nodes[num].color = "blue";
 		}
-		else if (strstr(name,"TARGETENTRY"))
+		else if (strstr(name, "TARGETENTRY"))
 		{
 			nodes[num].color = "orange";
 		}
-		else if (strstr(name,"RELOPTINFO"))
+		else if (strstr(name, "RELOPTINFO"))
 		{
 			nodes[num].color = "green";
 		}
@@ -360,11 +353,11 @@ int add_item(int node_n, int elem_n, char *name)
 char * get_one_name()
 {
 	char * buffer = (char*)malloc(LENGTH);
-	int i=0;
-	int c=0;
-	int len=0;
-	bool found_zero=false, found_non_zero=false;
-	char * pos;
+	int i = 0;
+	int c = 0;
+	int len = 0;
+	bool found_zero = false, found_non_zero = false;
+	char *pos;
 
 	memset(buffer,0,LENGTH);
 	while((c=getc(stdin)) != ':' && c!='{' && c!='}')
@@ -373,7 +366,7 @@ char * get_one_name()
 	}
 
 	/* push back the token */
-	ungetc(c,stdin);
+	ungetc(c, stdin);
 
 	len = strlen(buffer);
 
