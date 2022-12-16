@@ -23,11 +23,13 @@
 #define true 1
 #define false 0
 
-typedef struct Elem {
+typedef struct Elem 
+{
 	char name[LENGTH];
 } Elem;
 
-typedef struct Node {
+typedef struct Node
+{
 	char name[LENGTH];
 	Elem elems[LENGTH];
 	char links[LENGTH][LENGTH];
@@ -46,11 +48,9 @@ int elem_num = 0;
 #define set(var,value) (var=value)
 #define get(x) (x)
 
-
 /*
  * a mini-stack
  */
-
 int *stack = NULL;
 int top = 0;
 
@@ -58,6 +58,7 @@ int push(int var)
 {
 	stack[top++] = var;
 }
+
 int pop()
 {
 	return stack[--top];
@@ -80,11 +81,10 @@ char *progname = "node2dot";
 /*
  * options
  */
-
-
 bool is_skip_empty = false;
 bool is_color = false;
 char * skip_node_name = NULL;
+
 void usage()
 {
 	printf("\n\nConvert node tree of postgres to dot format\n"
@@ -143,12 +143,10 @@ int main(int argc, char *argv[])
             {0,           0,                 0,  0 }
         };
 
-        c = getopt_long(argc, argv, "h",
-                 long_options, &option_index);
+        c = getopt_long(argc, argv, "h", long_options, &option_index);
         
 		if (c == -1)
             break;
-
 
         switch (c)
 		{
@@ -163,14 +161,15 @@ int main(int argc, char *argv[])
                 if (strcmp("skip-empty",long_options[option_index].name) == 0)
 				{
 					is_skip_empty = 1;
-			
 					fprintf(stderr,"%s:skip empty elements\n",progname);
 				}
+
                 if (strcmp("color",long_options[option_index].name) == 0)
 				{
 					is_color = true;
 					fprintf(stderr,"%s:color output\n",progname);
 				}
+
                 if (strcmp("skip-node",long_options[option_index].name) == 0)
 				{
 					skip_node_name = strdup(optarg);
@@ -203,14 +202,13 @@ int main(int argc, char *argv[])
 #endif
 	}
 
-
 	/*
      * in previous we alloc stack on stack which raise an link error 
      * relocation truncated to fit: R_X86_64_PC32 against 
      * symbol `stack' defined in COMMON section 
      * to fix this alloc it in heap using malloc
      */
-	stack = (int*)malloc(sizeof(int)*LENGTH);
+	stack = (int*)malloc(sizeof(int) * LENGTH);
 
 	print_header();
 	while (EOF != (c = getc(stdin)))
@@ -235,11 +233,10 @@ int main(int argc, char *argv[])
 
 				if (get(node_cnt) != 0)
 				{
-					add_link(parent_node_num,
-							 parent_elem_num,
-							 child_node_num);     /* if on sub level add links */
+					add_link(parent_node_num, parent_elem_num, child_node_num);     /* if on sub level add links */
 				}
 				break;
+
 			case '}': /* end of the node */
 
 				/* we are not in a struct */
@@ -252,6 +249,7 @@ int main(int argc, char *argv[])
 				/* we are out if the stack */
 				level--;
 				break;
+
 			case ':':  /* a new item */
 
 				/* we are not in a struct */
@@ -265,13 +263,12 @@ int main(int argc, char *argv[])
 							 new(elem_num),
 							 name);
 				break;
-			defalut:
 
+			defalut:
 				/* if we are not in struct consume input until we meet one */
 				if (level <= 0)
 				{
-					while(EOF!= (c = getc(stdin)) && c !='{' )
-							;
+					while(EOF!= (c = getc(stdin)) && c !='{' ) ;
 					/* put it back */
 					ungetc('{',stdin);
 				}
@@ -282,19 +279,15 @@ int main(int argc, char *argv[])
 
 	print_body();
 	print_footer();
-
 }
 
 int print_header(void)
 {
-
 	printf("digraph Query {\n");
 	printf("size=\"100000,100000\";\n");
 	printf("rankdir=LR;\n");
 	printf("node [shape=record];\n");
 }
-
-
 
 int add_node(int num, char *name)
 {
@@ -338,9 +331,10 @@ int add_node(int num, char *name)
 
 		/* clear all the item name */
 		for (j = 0; j < LENGTH; j++)
+		{
 			memset(nodes[num].elems[j].name,0,LENGTH);
+		}
 	}
-	
 }
 
 
@@ -358,7 +352,6 @@ int add_item(int node_n, int elem_n, char *name)
 	free(name);
 }
 
-
 /*
  * get one node or element name from stdin
  * if name is ok return the name
@@ -375,11 +368,12 @@ char * get_one_name()
 
 	memset(buffer,0,LENGTH);
 	while((c=getc(stdin)) != ':' && c!='{' && c!='}')
-		buffer[i++]=c;	
+	{
+		buffer[i++] = c;
+	}
 
 	/* push back the token */
 	ungetc(c,stdin);
-
 
 	len = strlen(buffer);
 
@@ -398,8 +392,7 @@ char * get_one_name()
 			found_zero = true;
 
 		if (buffer[i] > '1' && buffer[i] < '9')
-			found_non_zero = true;
-		
+			found_non_zero = true;	
 	}
 
 	if ((pos = strstr(buffer,"(")) && !strstr(buffer,")"))
@@ -430,44 +423,42 @@ char * get_one_name()
 
 	return buffer;
 }
+
 int print_body(void)
 {
 	int i, j;
 
-
 	/* print the nodes */
 	for (i = 0; i <= get(node_cnt); i++)
 	{
-
 		if (strcmp(nodes[i].name,"") == 0)
 			continue;
 	
 		if (skip_node_name && strstr(nodes[i].name, skip_node_name))
 			continue;
 
-		printf("node%d [shape=record, color=%s, label=\"<f0> %s | ",
-				i, nodes[i].color, nodes[i].name);
-
+		printf("node%d [shape=record, color=%s, label=\"<f0> %s | ", i, nodes[i].color, nodes[i].name);
 
 		for (j = 1; j < LENGTH; j++)
 		{
-
 			if (strlen(nodes[i].elems[j].name) != 0)
-			   printf("<f%d> %s ", j, nodes[i].elems[j].name);
+			{
+				printf("<f%d> %s ", j, nodes[i].elems[j].name);
+			}
 			else
+			{
 				break;
+			}
 
 			if (strcmp(nodes[i].elems[j+1].name,"") != 0)
 				printf("| ");
 		}
 		printf("\"];\n");
-
 	}	
 
 	/* print the links */
 	for (i = 0; i < get(node_cnt); i++)
 	{
-
 		if (strcmp(nodes[i].name,"") == 0)
 			continue;
 	
@@ -477,9 +468,8 @@ int print_body(void)
 		for (j = 0; j < nodes[i].links_count; j++)
 			printf("%s", nodes[i].links[j]);
 	}
-
-
 }
+
 int add_link(int parent_node_num, int parent_elem_num, int child_node_num)
 {
 	int a;
